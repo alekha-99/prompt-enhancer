@@ -1,66 +1,92 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+/**
+ * Home Page
+ * Main landing page with PromptEnhancer component
+ */
 
-export default function Home() {
+'use client';
+
+import { Container, Box, Typography, Stack, Chip, alpha } from '@mui/material';
+import { AutoAwesome as SparkleIcon } from '@mui/icons-material';
+import { PromptEnhancer } from '@/components';
+
+export default function HomePage() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      {/* Header */}
+      <Box sx={{ textAlign: 'center', mb: 6 }}>
+        <Stack direction="row" justifyContent="center" alignItems="center" spacing={1} mb={2}>
+          <SparkleIcon sx={{ fontSize: 40, color: 'primary.main' }} />
+          <Typography
+            variant="h1"
+            sx={{
+              fontSize: { xs: '2rem', md: '2.5rem' },
+              background: 'linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+            }}
           >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+            Prompt Enhancer
+          </Typography>
+        </Stack>
+
+        <Typography
+          variant="h2"
+          color="text.secondary"
+          sx={{
+            fontSize: { xs: '1rem', md: '1.25rem' },
+            fontWeight: 400,
+            maxWidth: 600,
+            mx: 'auto',
+            mb: 3,
+          }}
+        >
+          Transform rough ideas into comprehensive, well-structured AI prompts with one click
+        </Typography>
+
+        <Stack
+          direction="row"
+          spacing={1}
+          justifyContent="center"
+          flexWrap="wrap"
+          useFlexGap
+        >
+          <Chip
+            label="⚡ One-Click Enhancement"
+            size="small"
+            sx={{
+              bgcolor: (theme) => alpha(theme.palette.primary.main, 0.1),
+              color: 'primary.light',
+            }}
+          />
+          <Chip
+            label="🎯 Refine Mode"
+            size="small"
+            sx={{
+              bgcolor: (theme) => alpha(theme.palette.secondary.main, 0.1),
+              color: 'secondary.light',
+            }}
+          />
+          <Chip
+            label="💰 Save API Credits"
+            size="small"
+            sx={{
+              bgcolor: (theme) => alpha(theme.palette.warning.main, 0.1),
+              color: 'warning.light',
+            }}
+          />
+        </Stack>
+      </Box>
+
+      {/* Main Content */}
+      <PromptEnhancer />
+
+      {/* Footer */}
+      <Box sx={{ textAlign: 'center', mt: 8, pt: 4, borderTop: 1, borderColor: 'divider' }}>
+        <Typography variant="body2" color="text.secondary">
+          Built with ❤️ using Next.js, Material UI & Meta-Prompting
+        </Typography>
+      </Box>
+    </Container>
   );
 }
