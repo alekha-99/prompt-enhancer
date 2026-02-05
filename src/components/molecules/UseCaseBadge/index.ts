@@ -1,0 +1,1 @@
+export { UseCaseBadge } from './UseCaseBadge';

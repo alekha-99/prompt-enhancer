@@ -1,11 +1,12 @@
 /**
  * Root Layout
- * Wraps the application with MUI Theme Provider
+ * Wraps the application with MUI Theme Provider and Redux Store
  */
 
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/theme';
+import { StoreProvider } from '@/store/StoreProvider';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -26,9 +27,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <ThemeProvider>
-          {children}
-        </ThemeProvider>
+        <StoreProvider>
+          <ThemeProvider>
+            {children}
+          </ThemeProvider>
+        </StoreProvider>
       </body>
     </html>
   );
