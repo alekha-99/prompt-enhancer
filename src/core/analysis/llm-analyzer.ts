@@ -96,9 +96,11 @@ export function parseAnalysisResponse(response: string): LLMPromptAnalysis {
     try {
         // Clean response - remove markdown if present
         let cleaned = response.trim();
-        if (cleaned.startsWith('```')) {
-            cleaned = cleaned.replace(/```json?\n?/g, '').replace(/```\n?$/g, '');
-        }
+        // Remove wrapping code blocks (```json ... ``` or just ``` ... ```)
+        cleaned = cleaned.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/i, '');
+
+        // Remove inline JSON wrappers if any remaining
+        cleaned = cleaned.replace(/^`/, '').replace(/`$/, '');
 
         const parsed = JSON.parse(cleaned);
 

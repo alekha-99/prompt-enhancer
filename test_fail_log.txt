@@ -1,0 +1,4 @@
+﻿
+> prompt-enhancer@0.1.0 test
+> jest --runInBand --no-coverage
+

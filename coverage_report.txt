@@ -1,0 +1,86 @@
+﻿
+> prompt-enhancer@0.1.0 test
+> jest --coverage --passWithNoTests
+
+---------------------------------------|---------|----------|---------|---------|-----------------------------------------------------------------
+File                                   | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s                                               
+---------------------------------------|---------|----------|---------|---------|-----------------------------------------------------------------
+All files                              |   63.15 |    53.23 |   53.82 |   64.42 |                                                                 
+ app/api/analyze-prompt                |       0 |        0 |       0 |       0 |                                                                 
+  route.ts                             |       0 |        0 |       0 |       0 | 6-56                                                            
+ app/api/enhance                       |     100 |      100 |     100 |     100 |                                                                 
+  route.ts                             |     100 |      100 |     100 |     100 |                                                                 
+ app/api/health                        |       0 |      100 |       0 |       0 |                                                                 
+  route.ts                             |       0 |      100 |       0 |       0 | 6-11                                                            
+ app/api/refine/enhance                |   86.66 |      100 |     100 |   86.66 |                                                                 
+  route.ts                             |   86.66 |      100 |     100 |   86.66 | 37-38                                                           
+ app/api/refine/questions              |     100 |      100 |     100 |     100 |                                                                 
+  route.ts                             |     100 |      100 |     100 |     100 |                                                                 
+ components/molecules/ContextPanel     |       0 |        0 |       0 |       0 |                                                                 
+  ContextPanel.tsx                     |       0 |        0 |       0 |       0 | 8-131                                                           
+ components/molecules/LLMScoreCard     |   15.62 |        0 |       0 |   15.62 |                                                                 
+  LLMScoreCard.tsx                     |   15.62 |        0 |       0 |   15.62 | 42-295                                                          
+ components/molecules/PromptDiffView   |    9.52 |        0 |       0 |   10.52 |                                                                 
+  PromptDiffView.tsx                   |    9.52 |        0 |       0 |   10.52 | 26-67,78-178                                                    
+ components/molecules/PromptScoreCard  |       0 |        0 |       0 |       0 |                                                                 
+  PromptScoreCard.tsx                  |       0 |        0 |       0 |       0 | 8-177                                                           
+ components/molecules/SmartSuggestions |      75 |       72 |   66.66 |   75.75 |                                                                 
+  SmartSuggestions.tsx                 |      75 |       72 |   66.66 |   75.75 | 48,55-57,72,106,154,209                                         
+ components/molecules/TemplateCard     |       0 |        0 |       0 |       0 |                                                                 
+  TemplateCard.tsx                     |       0 |        0 |       0 |       0 | 8-179                                                           
+ components/molecules/TokenCostPanel   |   55.55 |        0 |       0 |   55.55 |                                                                 
+  TokenCostPanel.tsx                   |   55.55 |        0 |       0 |   55.55 | 30-95                                                           
+ components/molecules/UseCaseBadge     |     100 |       75 |     100 |     100 |                                                                 
+  UseCaseBadge.tsx                     |     100 |       75 |     100 |     100 | 73                                                              
+ components/molecules/VariableForm     |       0 |        0 |       0 |       0 |                                                                 
+  VariableForm.tsx                     |       0 |        0 |       0 |       0 | 8-162                                                           
+ components/organisms/PatternLibrary   |       0 |        0 |       0 |       0 |                                                                 
+  PatternLibrary.tsx                   |       0 |        0 |       0 |       0 | 8-358                                                           
+ components/organisms/PromptEnhancer   |   84.21 |       70 |   83.33 |   85.55 |                                                                 
+  PromptEnhancer.tsx                   |   84.21 |       70 |   83.33 |   85.55 | 140,148-149,174,180,196-200,205-206,376                         
+ components/organisms/TemplateGallery  |       0 |        0 |       0 |       0 |                                                                 
+  TemplateGallery.tsx                  |       0 |        0 |       0 |       0 | 8-186                                                           
+ components/organisms/TemplatePreview  |       0 |        0 |       0 |       0 |                                                                 
+  TemplatePreview.tsx                  |       0 |        0 |       0 |       0 | 8-166                                                           
+ core/analysis                         |   81.73 |    70.86 |   84.37 |   82.92 |                                                                 
+  llm-analyzer.ts                      |      80 |    73.33 |      80 |   75.75 | 66-82,107                                                       
+  prompt-scorer.ts                     |   78.68 |    66.66 |   88.23 |   81.48 | 182-183,196-197,228-229,235-236,268-269,275-276,331-334,341-344 
+  token-estimator.ts                   |   81.81 |       65 |   66.66 |   82.92 | 137-140,147-150                                                 
+  use-case-detector.ts                 |     100 |      100 |     100 |     100 |                                                                 
+ core/prompts                          |     100 |      100 |     100 |     100 |                                                                 
+  templates.ts                         |     100 |      100 |     100 |     100 |                                                                 
+ core/services/enhance                 |     100 |    78.57 |     100 |     100 |                                                                 
+  enhance.service.ts                   |     100 |    78.57 |     100 |     100 | 32,64,119                                                       
+ core/services/llm                     |   88.46 |    71.76 |   93.75 |      88 |                                                                 
+  anthropic.adapter.ts                 |   85.18 |    76.66 |    87.5 |   83.33 | 55-60,69                                                        
+  llm.factory.ts                       |      90 |     64.7 |     100 |      90 | 27,36,44                                                        
+  openai.adapter.ts                    |   90.47 |    71.05 |     100 |   90.47 | 25,51                                                           
+ core/suggestions                      |   98.46 |    96.96 |     100 |   98.24 |                                                                 
+  suggestion-engine.ts                 |   98.46 |    96.96 |     100 |   98.24 | 279                                                             
+ core/templates                        |   63.68 |    51.19 |   66.66 |    66.3 |                                                                 
+  chain.executor.ts                    |       0 |        0 |       0 |       0 | 7-162                                                           
+  context.adapter.ts                   |     100 |      100 |     100 |     100 |                                                                 
+  template.service.ts                  |   60.97 |    28.57 |      64 |   62.16 | 87-106,129,180,188-204,211-212,219,230,241-245                  
+  variable.engine.ts                   |   88.67 |       84 |     100 |   95.74 | 87,102                                                          
+ data                                  |     100 |      100 |     100 |     100 |                                                                 
+  prompt-patterns.ts                   |     100 |      100 |     100 |     100 |                                                                 
+  templates.ts                         |     100 |      100 |     100 |     100 |                                                                 
+ infrastructure/config                 |   97.05 |       85 |     100 |   97.05 |                                                                 
+  constants.ts                         |     100 |      100 |     100 |     100 |                                                                 
+  env.ts                               |   96.55 |       85 |     100 |   96.55 | 65                                                              
+ shared/hooks                          |   96.77 |      100 |   88.88 |   96.42 |                                                                 
+  useApi.ts                            |     100 |      100 |     100 |     100 |                                                                 
+  useClipboard.ts                      |   92.85 |      100 |      75 |    92.3 | 27                                                              
+ shared/utils                          |     100 |    94.73 |     100 |     100 |                                                                 
+  clipboard.ts                         |     100 |      100 |     100 |     100 |                                                                 
+  error-handler.ts                     |     100 |    85.71 |     100 |     100 | 18                                                              
+  validation.ts                        |     100 |      100 |     100 |     100 |                                                                 
+ store                                 |       0 |        0 |       0 |       0 |                                                                 
+  StoreProvider.tsx                    |       0 |      100 |       0 |       0 | 8-20                                                            
+  hooks.ts                             |       0 |      100 |     100 |       0 | 5-10                                                            
+  selectors.ts                         |       0 |        0 |       0 |       0 | 6-87                                                            
+  store.ts                             |       0 |      100 |       0 |       0 | 5-15                                                            
+ store/slices                          |   94.28 |    66.66 |     100 |   96.96 |                                                                 
+  templatesSlice.ts                    |   90.47 |       70 |     100 |   94.73 | 25,35                                                           
+  uiSlice.ts                           |     100 |       50 |     100 |     100 | 58                                                              
+---------------------------------------|---------|----------|---------|---------|-----------------------------------------------------------------
