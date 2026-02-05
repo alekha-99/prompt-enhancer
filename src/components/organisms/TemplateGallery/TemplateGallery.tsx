@@ -1,11 +1,11 @@
 /**
- * TemplateGallery Component
- * Browse, search, and filter templates
+ * TemplateGallery Component (Redux version)
+ * Browse, search, and filter templates using Redux state
  */
 
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import {
     Box,
     TextField,
@@ -14,13 +14,11 @@ import {
     InputAdornment,
     Typography,
     Grid,
-    Chip,
     IconButton,
     Tooltip,
 } from '@mui/material';
 import {
     Search,
-    FilterList,
     Star,
     Code,
     Edit,
@@ -31,18 +29,16 @@ import {
     Add,
 } from '@mui/icons-material';
 import { TemplateCard } from '@/components/molecules/TemplateCard';
-import { PromptTemplate, TemplateCategory } from '@/core/templates/template.types';
+import { PromptTemplate } from '@/core/templates/template.types';
 import {
-    getAllTemplates,
-    getFavorites,
-    addFavorite,
-    removeFavorite,
-    isFavorite,
-    searchTemplates,
-    getTemplatesByCategory,
-    getFavoriteTemplates,
-    getCustomTemplates,
-} from '@/core/templates/template.service';
+    useAppDispatch,
+    useAppSelector,
+    setSearchQuery,
+    setActiveCategory,
+    toggleFavorite,
+    initializeFromStorage,
+    selectSearchFilteredTemplates,
+} from '@/store';
 
 interface TemplateGalleryProps {
     onSelectTemplate: (template: PromptTemplate) => void;
@@ -50,7 +46,7 @@ interface TemplateGalleryProps {
     onCreateNew?: () => void;
 }
 
-type TabValue = 'all' | TemplateCategory | 'favorites' | 'custom';
+type TabValue = 'all' | 'coding' | 'writing' | 'marketing' | 'productivity' | 'creative' | 'favorites' | 'custom';
 
 interface TabConfig {
     value: TabValue;
@@ -74,47 +70,21 @@ export function TemplateGallery({
     onPreviewTemplate,
     onCreateNew,
 }: TemplateGalleryProps) {
-    const [activeTab, setActiveTab] = useState<TabValue>('all');
-    const [searchQuery, setSearchQuery] = useState('');
-    const [favorites, setFavorites] = useState<string[]>(() => getFavorites());
+    const dispatch = useAppDispatch();
 
-    // Get filtered templates based on tab and search
-    const filteredTemplates = useMemo(() => {
-        let templates: PromptTemplate[];
+    // Redux state
+    const activeCategory = useAppSelector((state) => state.templates.activeCategory);
+    const searchQuery = useAppSelector((state) => state.templates.searchQuery);
+    const favorites = useAppSelector((state) => state.templates.favorites);
+    const filteredTemplates = useAppSelector(selectSearchFilteredTemplates);
 
-        // Filter by tab
-        if (activeTab === 'all') {
-            templates = getAllTemplates();
-        } else if (activeTab === 'favorites') {
-            templates = getFavoriteTemplates();
-        } else if (activeTab === 'custom') {
-            templates = getCustomTemplates();
-        } else {
-            templates = getTemplatesByCategory(activeTab);
-        }
-
-        // Filter by search query
-        if (searchQuery.trim()) {
-            const query = searchQuery.toLowerCase();
-            templates = templates.filter(
-                (t) =>
-                    t.name.toLowerCase().includes(query) ||
-                    t.description.toLowerCase().includes(query) ||
-                    t.tags.some((tag) => tag.toLowerCase().includes(query))
-            );
-        }
-
-        return templates;
-    }, [activeTab, searchQuery, favorites]);
+    // Initialize from localStorage on mount
+    useEffect(() => {
+        dispatch(initializeFromStorage());
+    }, [dispatch]);
 
     const handleToggleFavorite = (templateId: string) => {
-        if (favorites.includes(templateId)) {
-            removeFavorite(templateId);
-            setFavorites(favorites.filter((id) => id !== templateId));
-        } else {
-            addFavorite(templateId);
-            setFavorites([...favorites, templateId]);
-        }
+        dispatch(toggleFavorite(templateId));
     };
 
     return (
@@ -153,7 +123,7 @@ export function TemplateGallery({
                 fullWidth
                 placeholder="Search templates by name, description, or tags..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => dispatch(setSearchQuery(e.target.value))}
                 size="small"
                 InputProps={{
                     startAdornment: (
@@ -167,26 +137,18 @@ export function TemplateGallery({
                     '& .MuiOutlinedInput-root': {
                         backgroundColor: 'rgba(255,255,255,0.03)',
                         borderRadius: 2,
-                        '& fieldset': {
-                            borderColor: 'rgba(255,255,255,0.1)',
-                        },
-                        '&:hover fieldset': {
-                            borderColor: 'rgba(255,255,255,0.2)',
-                        },
-                        '&.Mui-focused fieldset': {
-                            borderColor: '#a855f7',
-                        },
+                        '& fieldset': { borderColor: 'rgba(255,255,255,0.1)' },
+                        '&:hover fieldset': { borderColor: 'rgba(255,255,255,0.2)' },
+                        '&.Mui-focused fieldset': { borderColor: '#a855f7' },
                     },
-                    '& .MuiInputBase-input': {
-                        color: 'white',
-                    },
+                    '& .MuiInputBase-input': { color: 'white' },
                 }}
             />
 
             {/* Category Tabs */}
             <Tabs
-                value={activeTab}
-                onChange={(_, newValue) => setActiveTab(newValue)}
+                value={activeCategory}
+                onChange={(_, newValue) => dispatch(setActiveCategory(newValue))}
                 variant="scrollable"
                 scrollButtons="auto"
                 sx={{
@@ -195,13 +157,9 @@ export function TemplateGallery({
                         color: 'rgba(255,255,255,0.5)',
                         minHeight: 48,
                         textTransform: 'capitalize',
-                        '&.Mui-selected': {
-                            color: 'white',
-                        },
+                        '&.Mui-selected': { color: 'white' },
                     },
-                    '& .MuiTabs-indicator': {
-                        backgroundColor: '#a855f7',
-                    },
+                    '& .MuiTabs-indicator': { backgroundColor: '#a855f7' },
                 }}
             >
                 {TABS.map((tab) => (
@@ -211,20 +169,13 @@ export function TemplateGallery({
                         label={tab.label}
                         icon={tab.icon}
                         iconPosition="start"
-                        sx={{
-                            '& .MuiTab-iconWrapper': {
-                                marginRight: 1,
-                            },
-                        }}
+                        sx={{ '& .MuiTab-iconWrapper': { marginRight: 1 } }}
                     />
                 ))}
             </Tabs>
 
             {/* Results Count */}
-            <Typography
-                variant="body2"
-                sx={{ mb: 2, color: 'rgba(255,255,255,0.5)' }}
-            >
+            <Typography variant="body2" sx={{ mb: 2, color: 'rgba(255,255,255,0.5)' }}>
                 {filteredTemplates.length} template{filteredTemplates.length !== 1 ? 's' : ''} found
             </Typography>
 
@@ -260,9 +211,9 @@ export function TemplateGallery({
                     <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.3)' }}>
                         {searchQuery
                             ? 'Try a different search term'
-                            : activeTab === 'favorites'
+                            : activeCategory === 'favorites'
                                 ? 'Star some templates to see them here'
-                                : activeTab === 'custom'
+                                : activeCategory === 'custom'
                                     ? 'Create your first custom template'
                                     : 'No templates available'}
                     </Typography>

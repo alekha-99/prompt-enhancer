@@ -1,11 +1,11 @@
 /**
- * TemplatePreview Component
+ * TemplatePreview Component (Redux version)
  * Modal for previewing template with filled variables
  */
 
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
     Dialog,
     DialogTitle,
@@ -21,43 +21,33 @@ import {
     Paper,
 } from '@mui/material';
 import { Close, ContentCopy, Check, Code, Visibility } from '@mui/icons-material';
-import { PromptTemplate, AIModel, OutputFormat } from '@/core/templates/template.types';
 import { VariableForm } from '@/components/molecules/VariableForm';
 import { ContextPanel } from '@/components/molecules/ContextPanel';
 import { renderTemplate } from '@/core/templates/variable.engine';
 import { applyContextAdaptations } from '@/core/templates/context.adapter';
+import {
+    useAppDispatch,
+    useAppSelector,
+    closeTemplatePreview,
+    setVariableValue,
+    setSelectedModel,
+    setSelectedFormat,
+    setTokenOptimization,
+    applyTemplateToEnhancer,
+} from '@/store';
 
-interface TemplatePreviewProps {
-    open: boolean;
-    template: PromptTemplate | null;
-    onClose: () => void;
-    onApply: (renderedPrompt: string) => void;
-}
-
-export function TemplatePreview({
-    open,
-    template,
-    onClose,
-    onApply,
-}: TemplatePreviewProps) {
+export function TemplatePreview() {
+    const dispatch = useAppDispatch();
     const [activeTab, setActiveTab] = useState<'variables' | 'preview'>('variables');
-    const [values, setValues] = useState<Record<string, string>>({});
-    const [selectedModel, setSelectedModel] = useState<AIModel>('gpt-4');
-    const [selectedFormat, setSelectedFormat] = useState<OutputFormat>('text');
-    const [tokenOptimization, setTokenOptimization] = useState(false);
     const [copied, setCopied] = useState(false);
 
-    // Reset values when template changes
-    React.useEffect(() => {
-        if (template) {
-            const initialValues: Record<string, string> = {};
-            template.variables.forEach((v) => {
-                initialValues[v.name] = v.defaultValue || '';
-            });
-            setValues(initialValues);
-            setActiveTab('variables');
-        }
-    }, [template?.id]);
+    // Redux state
+    const open = useAppSelector((state) => state.ui.previewModalOpen);
+    const template = useAppSelector((state) => state.ui.selectedTemplate);
+    const values = useAppSelector((state) => state.ui.variableValues);
+    const selectedModel = useAppSelector((state) => state.ui.selectedModel);
+    const selectedFormat = useAppSelector((state) => state.ui.selectedFormat);
+    const tokenOptimization = useAppSelector((state) => state.ui.tokenOptimization);
 
     // Rendered prompt
     const renderedPrompt = useMemo(() => {
@@ -78,12 +68,15 @@ export function TemplatePreview({
     }, [template, values, selectedModel, selectedFormat, tokenOptimization]);
 
     const handleValueChange = (name: string, value: string) => {
-        setValues((prev) => ({ ...prev, [name]: value }));
+        dispatch(setVariableValue({ name, value }));
     };
 
     const handleApply = () => {
-        onApply(renderedPrompt);
-        onClose();
+        dispatch(applyTemplateToEnhancer(renderedPrompt));
+    };
+
+    const handleClose = () => {
+        dispatch(closeTemplatePreview());
     };
 
     const handleCopy = async () => {
@@ -97,7 +90,7 @@ export function TemplatePreview({
     return (
         <Dialog
             open={open}
-            onClose={onClose}
+            onClose={handleClose}
             maxWidth="md"
             fullWidth
             PaperProps={{
@@ -125,7 +118,7 @@ export function TemplatePreview({
                         {template.description}
                     </Typography>
                 </Box>
-                <IconButton onClick={onClose} sx={{ color: 'rgba(255,255,255,0.5)' }}>
+                <IconButton onClick={handleClose} sx={{ color: 'rgba(255,255,255,0.5)' }}>
                     <Close />
                 </IconButton>
             </DialogTitle>
@@ -168,9 +161,9 @@ export function TemplatePreview({
                                     selectedFormat={selectedFormat}
                                     tokenOptimization={tokenOptimization}
                                     promptText={renderedPrompt}
-                                    onModelChange={setSelectedModel}
-                                    onFormatChange={setSelectedFormat}
-                                    onOptimizationChange={setTokenOptimization}
+                                    onModelChange={(model) => dispatch(setSelectedModel(model))}
+                                    onFormatChange={(format) => dispatch(setSelectedFormat(format))}
+                                    onOptimizationChange={(enabled) => dispatch(setTokenOptimization(enabled))}
                                 />
                             </>
                         ) : (
@@ -253,10 +246,7 @@ export function TemplatePreview({
                     gap: 1,
                 }}
             >
-                <Button
-                    onClick={onClose}
-                    sx={{ color: 'rgba(255,255,255,0.5)' }}
-                >
+                <Button onClick={handleClose} sx={{ color: 'rgba(255,255,255,0.5)' }}>
                     Cancel
                 </Button>
                 <Button

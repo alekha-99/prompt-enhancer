@@ -20,10 +20,12 @@
     "@mui/icons-material": "^7.3.7",
     "@mui/material": "^7.3.7",
     "@mui/material-nextjs": "^7.3.7",
+    "@reduxjs/toolkit": "^2.11.2",
     "next": "16.1.6",
     "openai": "^6.17.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "react-redux": "^9.2.0",
     "reactflow": "^11.11.4"
   },
   "devDependencies": {

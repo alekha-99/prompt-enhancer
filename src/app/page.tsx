@@ -1,40 +1,37 @@
 /**
- * Home Page
+ * Home Page (Redux version)
  * Main landing page with PromptEnhancer and Template Gallery
  */
 
 'use client';
 
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { Container, Box, Typography, Stack, Chip, alpha, Tabs, Tab } from '@mui/material';
 import { AutoAwesome as SparkleIcon, LibraryBooks, Edit } from '@mui/icons-material';
 import { PromptEnhancer } from '@/components';
 import { TemplateGallery } from '@/components/organisms/TemplateGallery';
 import { TemplatePreview } from '@/components/organisms/TemplatePreview';
+import {
+  useAppDispatch,
+  useAppSelector,
+  setActiveTab,
+  openTemplatePreview,
+  initializeFromStorage,
+} from '@/store';
 import { PromptTemplate } from '@/core/templates/template.types';
 
-type TabValue = 'enhancer' | 'templates';
-
 export default function HomePage() {
-  const [activeTab, setActiveTab] = useState<TabValue>('enhancer');
-  const [selectedTemplate, setSelectedTemplate] = useState<PromptTemplate | null>(null);
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [initialPrompt, setInitialPrompt] = useState('');
+  const dispatch = useAppDispatch();
+  const activeTab = useAppSelector((state) => state.ui.activeTab);
+  const inputPrompt = useAppSelector((state) => state.ui.inputPrompt);
+
+  // Initialize templates from localStorage on mount
+  useEffect(() => {
+    dispatch(initializeFromStorage());
+  }, [dispatch]);
 
   const handleSelectTemplate = (template: PromptTemplate) => {
-    setSelectedTemplate(template);
-    setPreviewOpen(true);
-  };
-
-  const handlePreviewTemplate = (template: PromptTemplate) => {
-    setSelectedTemplate(template);
-    setPreviewOpen(true);
-  };
-
-  const handleApplyTemplate = (renderedPrompt: string) => {
-    setInitialPrompt(renderedPrompt);
-    setActiveTab('enhancer');
-    setPreviewOpen(false);
+    dispatch(openTemplatePreview(template));
   };
 
   return (
@@ -96,7 +93,7 @@ export default function HomePage() {
             }}
           />
           <Chip
-            label="🎯 Variable Injection"
+            label="🎯 Redux Powered"
             size="small"
             sx={{
               bgcolor: (theme) => alpha(theme.palette.warning.main, 0.1),
@@ -110,7 +107,7 @@ export default function HomePage() {
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 4 }}>
         <Tabs
           value={activeTab}
-          onChange={(_, value) => setActiveTab(value)}
+          onChange={(_, value) => dispatch(setActiveTab(value))}
           centered
           sx={{
             '& .MuiTab-root': {
@@ -139,26 +136,21 @@ export default function HomePage() {
 
       {/* Content */}
       {activeTab === 'enhancer' ? (
-        <PromptEnhancer key={initialPrompt} initialPrompt={initialPrompt} />
+        <PromptEnhancer key={inputPrompt} initialPrompt={inputPrompt} />
       ) : (
         <TemplateGallery
           onSelectTemplate={handleSelectTemplate}
-          onPreviewTemplate={handlePreviewTemplate}
+          onPreviewTemplate={handleSelectTemplate}
         />
       )}
 
-      {/* Template Preview Modal */}
-      <TemplatePreview
-        open={previewOpen}
-        template={selectedTemplate}
-        onClose={() => setPreviewOpen(false)}
-        onApply={handleApplyTemplate}
-      />
+      {/* Template Preview Modal (controlled by Redux) */}
+      <TemplatePreview />
 
       {/* Footer */}
       <Box sx={{ textAlign: 'center', mt: 8, pt: 4, borderTop: 1, borderColor: 'divider' }}>
         <Typography variant="body2" color="text.secondary">
-          Built with ❤️ using Next.js, Material UI & Smart Templates
+          Built with ❤️ using Next.js, Material UI, Redux Toolkit & Smart Templates
         </Typography>
       </Box>
     </Container>
