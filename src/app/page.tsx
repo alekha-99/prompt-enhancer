@@ -7,16 +7,18 @@
 
 import { useEffect } from 'react';
 import { Container, Box, Typography, Stack, Chip, alpha, Tabs, Tab } from '@mui/material';
-import { AutoAwesome as SparkleIcon, LibraryBooks, Edit } from '@mui/icons-material';
+import { AutoAwesome as SparkleIcon, LibraryBooks, Edit, Psychology } from '@mui/icons-material';
 import { PromptEnhancer } from '@/components';
 import { TemplateGallery } from '@/components/organisms/TemplateGallery';
 import { TemplatePreview } from '@/components/organisms/TemplatePreview';
+import { PatternLibrary } from '@/components/organisms/PatternLibrary';
 import {
   useAppDispatch,
   useAppSelector,
   setActiveTab,
   openTemplatePreview,
   initializeFromStorage,
+  setInputPrompt,
 } from '@/store';
 import { PromptTemplate } from '@/core/templates/template.types';
 
@@ -32,6 +34,11 @@ export default function HomePage() {
 
   const handleSelectTemplate = (template: PromptTemplate) => {
     dispatch(openTemplatePreview(template));
+  };
+
+  const handleApplyPattern = (template: string) => {
+    dispatch(setInputPrompt(template));
+    dispatch(setActiveTab('enhancer'));
   };
 
   return (
@@ -101,6 +108,15 @@ export default function HomePage() {
             }}
           />
         </Stack>
+
+        <Chip
+          label="🧠 15+ Prompt Patterns"
+          size="small"
+          sx={{
+            bgcolor: (theme) => alpha(theme.palette.success.main, 0.1),
+            color: 'success.light',
+          }}
+        />
       </Box>
 
       {/* Main Tabs */}
@@ -127,21 +143,39 @@ export default function HomePage() {
           />
           <Tab
             value="templates"
-            label="Template Library"
+            label="Templates"
             icon={<LibraryBooks />}
+            iconPosition="start"
+          />
+          <Tab
+            value="patterns"
+            label="Patterns"
+            icon={<Psychology />}
             iconPosition="start"
           />
         </Tabs>
       </Box>
 
       {/* Content */}
-      {activeTab === 'enhancer' ? (
+      {activeTab === 'enhancer' && (
         <PromptEnhancer key={inputPrompt} initialPrompt={inputPrompt} />
-      ) : (
+      )}
+      {activeTab === 'templates' && (
         <TemplateGallery
           onSelectTemplate={handleSelectTemplate}
           onPreviewTemplate={handleSelectTemplate}
         />
+      )}
+      {activeTab === 'patterns' && (
+        <Box sx={{ maxWidth: 800, mx: 'auto' }}>
+          <Typography variant="h5" sx={{ mb: 3, fontWeight: 600 }}>
+            🧠 Prompt Patterns
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
+            Pre-built patterns for effective prompting. Click to apply a pattern to your prompt.
+          </Typography>
+          <PatternLibrary onApplyPattern={handleApplyPattern} />
+        </Box>
       )}
 
       {/* Template Preview Modal (controlled by Redux) */}

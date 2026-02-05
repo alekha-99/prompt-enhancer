@@ -12,7 +12,7 @@ interface UIState {
     selectedTemplate: PromptTemplate | null;
 
     // Main tabs
-    activeTab: 'enhancer' | 'templates';
+    activeTab: 'enhancer' | 'templates' | 'patterns';
 
     // Template variables
     variableValues: Record<string, string>;
