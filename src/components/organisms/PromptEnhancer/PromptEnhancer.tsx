@@ -39,8 +39,12 @@ interface RefineState {
     answers: Record<string, string>;
 }
 
-export function PromptEnhancer() {
-    const [inputPrompt, setInputPrompt] = useState('');
+interface PromptEnhancerProps {
+    initialPrompt?: string;
+}
+
+export function PromptEnhancer({ initialPrompt = '' }: PromptEnhancerProps) {
+    const [inputPrompt, setInputPrompt] = useState(initialPrompt);
     const [enhancedPrompt, setEnhancedPrompt] = useState('');
     const [mode, setMode] = useState<Mode>('idle');
     const [loading, setLoading] = useState(false);
